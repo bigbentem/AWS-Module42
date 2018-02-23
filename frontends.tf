@@ -32,11 +32,33 @@ resource "aws_key_pair" "front" {
 resource "aws_instance" "front" {
   # TO DO
   # see https://www.terraform.io/docs/providers/aws/r/instance.html
+  ami = "${front_ami}"
+  instance_type = "${front_instance_type}"
+  count = "${length(var.azs[var.region])}"
+  security_groups = ["${ws_security_group.front}"]
+  subnet_id = "${var.aws_subnet.public.id, count.index}"
+  key_name   = "${var.project_name}-front"
+  
+  tags {
+    Name = "${var.project_name}_front_instance${count.index}"
+  }
 }
 
 resource "aws_elb" "front" {
   # TO DO
   # see https://www.terraform.io/docs/providers/aws/r/elb.html
+  name = "${var.project_name}-elb}"
+  count = "${lenght(var.azs[var.region])}"
+  availability_zones = "${element(var.azs[var.region], count.index)}"
+  listener {
+    instance_port     = "${front_elb_port}"
+    instance_protocol = "${front_elb_protocol}"
+    lb_port           = "${front_elb_port}"
+    lb_protocol       = "${front_elb_protocol}"
+  }
+  instances = ["${aws_instance.front.id}"]
+  cross_zone_load_balancing = true
+  idle_timeout = 400
 }
 
 ### Outputs

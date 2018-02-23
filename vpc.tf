@@ -10,7 +10,7 @@ variable "azs" {
 }
 
 variable "cidr_block" {
-  default = "10.0.0.0/16"
+  default = "11.0.0.0/16"
 }
 
 ### Provider
