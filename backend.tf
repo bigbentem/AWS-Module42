@@ -29,28 +29,34 @@ resource "aws_db_subnet_group" "mysql" {
   # TO DO
   # see https://www.terraform.io/docs/providers/aws/r/db_subnet_group.html
   name = "${var.project_name}-sgmysql"
-  subnet_ids = {"${aws_subnet.front.id}","{aws_subnet.mysql.id}"}
+  subnet_ids = ["${aws_subnet.public.*.id}"]
 }
 
 resource "aws_db_instance" "mysql" {
   # TO DO
   # see https://www.terraform.io/docs/providers/aws/r/db_instance.html
   # create the db from the given snapshot
-  allocated_storage = ${db_storage}
-  engine = "${db_engine}"
-  instance_class = "${db_instance_class}"
-  instance_name = "${var.project_name}-mysql"
-  username = "${db_user}"
-  password = "${db_password}"
+  allocated_storage = "${var.db_storage}"
+  engine = "${var.db_engine}"
+  instance_class = "${var.db_instance_type}"
+  username = "${var.db_user}"
+  password = "${var.db_password}"
   db_subnet_group_name = "${var.project_name}-sgmysql"
-  snapshot_identifier = "${db_snapshot}"
+  snapshot_identifier = "${var.db_snapshot}"
+  skip_final_snapshot = true
+  identifier = "${var.project_name}-mydb"
 }
 
 ### Outputs
 output "mysql_host" {
   # TO DO
   # see https://www.terraform.io/intro/getting-started/outputs.html
-  value = "${aws_bd_instance.mysql.address}"
+  value = "${aws_db_instance.mysql.address}"
+}
+
+output "mysql_endpoint" {
+  # TO DO
+  value = "${aws_db_instance.mysql.endpoint}"
 }
 
 output "mysql_db" {
@@ -65,5 +71,5 @@ output "mysql_user" {
 
 output "mysql_password" {
   # TO DO
-  value = "${db_password}"
+  value = "${var.db_password}"
 }

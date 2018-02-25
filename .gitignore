@@ -1,3 +1,5 @@
 # Terraform
 *.tfstate*
 .terraform/
+*.plan
+*.sublim*
