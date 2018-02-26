@@ -41,7 +41,7 @@ resource "aws_db_instance" "mysql" {
   instance_class = "${var.db_instance_type}"
   username = "${var.db_user}"
   password = "${var.db_password}"
-  db_subnet_group_name = "${var.project_name}-sgmysql"
+  db_subnet_group_name = "${aws_db_subnet_group.mysql.name}"
   snapshot_identifier = "${var.db_snapshot}"
   skip_final_snapshot = true
   identifier = "${var.project_name}-mydb"
@@ -72,4 +72,8 @@ output "mysql_user" {
 output "mysql_password" {
   # TO DO
   value = "${var.db_password}"
+}
+
+output "mysql_subnet_group_name" {
+  value = ["${var.project_name}-sgmysql","${aws_db_subnet_group.mysql.name}"]
 }

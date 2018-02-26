@@ -12,7 +12,7 @@ variable front_instance_type {
 }
 
 variable public_key {
-  default = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDrAJS4BOKEPCjd8kwr29EZ4N3dpkSr5HGT+A7HJtBawryDR9irJVZXDm7NqmKa79hkPQZytTkaZo6BiIK+nD/phV76xnxTshqn0s4+WLVMfJopI48udkHwRBvbzpWV/FoLb7aBw4ibmul/SISnLx24sLOdY9JR2OXugcaBkejWEmEK0Qy83Ri8+g/S5sLDfMbruM4b0k8RqgICSgRJWtYrDTgMzFRdGyucJtu02UruWBzl25Rj853u8JL3Uzy5mlhK2hcY+MrRSY8h2sInbXXugNZ9ixkmeb0OCaYGD8FwQ32X7p2rzyxyL0REHXpeg0H4NUTkhy/tBaC6EOLnDUWbigELW0uKB/++lWMJx9nEyS+DQ7cqBOKgKULrZHRwrv8KD+lSJUN5RulB5+kTS/tTi71TA26x+tH9mraBQbcDL3PeYeVYPJMcQj9PevNjIVHiTAqDrDPrTONL2tEP5XrCMZ2KN4bNpvm/DqX7CmkXUWhbqSEl7iqcev+4q1h3iHYDOn9Z929jMfGFGCiqQ3dJcXVFTXZp4k8zxZELbbKzsRxMePAXEe/DG7YHnLsQAixzzy0MWnj6ZUYADLwca6kKp8g/rZhuv6hf6mVXJTu3LadMguBL1gGUSJgBrpEjxL+SysXXBwQw+u1T8S+9OYV9FEoNg/0csJZ9D2YYybjgvQ== crashcourse@devops.d2si"
+  default = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCRj5ofoQae7zl9KsPgleh+N8qXJwAIJf1JNDU9thGPc1JQ8L97AucajFqfX8cfDEVt4ooKTCGuKG86FXuQ+NIfQXHHZHbXnKe9o4Xs0E32mc6ztPe5OO/6x4hLdCdI/uYV1dj+KwHWSghnplKlFUTPU9LfZs6FMVqPrqaEpfL2nNEFO544wuWcqw0PYw9ftdEofRbd31VQ4rBXZwa2xee8fL2wQolyL8g+lQTW6Xm+5hLMFv70qz+I0Xqb1tSjddz0K1iE8hqqVw3PmjVfPYBIkwyAyacfh0uTs1v2i6c5ufuqPYdWbtYvMe8x/kh+2csf+Fvvum/Puj69e3fUf7fR"
 }
 
 variable front_instance_port {
@@ -30,6 +30,13 @@ variable front_elb_protocol {
 ### Template for the instances user_data
 data "template_file" "init" {
   template = "${file("init.tpl")}"
+
+  vars{
+    DBHOST = "${aws_db_instance.mysql.address}"
+    DATABASE = "${aws_db_instance.mysql.name}"
+    DBUSER = "${var.db_user}"
+    DBPASSWORD = "${var.db_password}"
+  }
 }
 
 
